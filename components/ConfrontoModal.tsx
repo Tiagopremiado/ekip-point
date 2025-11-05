@@ -19,15 +19,15 @@ const ConfrontoModal: React.FC<ConfrontoModalProps> = ({ isOpen, onClose, onSave
     date: new Date().toISOString().split('T')[0],
     description: ''
   });
-  const [unidade, setUnidade] = useState<Unit>('Pelotas');
-
-  const availableTeams = useMemo(() => {
-    return teams.filter(t => t.unidade === unidade);
-  }, [teams, unidade]);
+  const [unidade, setUnidade] = useState<Unit | 'Contra-Unidades'>('Pelotas');
 
   useEffect(() => {
     if (confronto) {
-        setUnidade(confronto.unidade);
+        const team1 = teams.find(t => t.id === confronto.team1Id);
+        const team2 = teams.find(t => t.id === confronto.team2Id);
+        const isCrossUnit = team1 && team2 && team1.unidade !== team2.unidade;
+
+        setUnidade(isCrossUnit ? 'Contra-Unidades' : confronto.unidade);
         setFormData({
             team1Id: confronto.team1Id,
             team2Id: confronto.team2Id,
@@ -45,13 +45,43 @@ const ConfrontoModal: React.FC<ConfrontoModalProps> = ({ isOpen, onClose, onSave
             description: ''
         });
     }
-  }, [confronto, isOpen]);
+  }, [confronto, isOpen, teams]);
+
+  const { availableTeams1, availableTeams2 } = useMemo(() => {
+    if (unidade === 'Contra-Unidades') {
+        const allTeams = teams; 
+        const team1 = teams.find(t => t.id === formData.team1Id);
+        
+        let teamsForTeam2: Team[] = [];
+        if (team1) {
+            const otherUnit = team1.unidade === 'Pelotas' ? 'Pedro Osório' : 'Pelotas';
+            teamsForTeam2 = teams.filter(t => t.unidade === otherUnit);
+        }
+        return { availableTeams1: allTeams, availableTeams2: teamsForTeam2 };
+    } else {
+        const unitTeams = teams.filter(t => t.unidade === unidade);
+        return { 
+            availableTeams1: unitTeams, 
+            availableTeams2: unitTeams.filter(t => t.id !== formData.team1Id) 
+        };
+    }
+  }, [teams, unidade, formData.team1Id]);
 
   if (!isOpen) return null;
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: (name.includes('Score')) ? parseInt(value) || 0 : value }));
+    const isScoreField = name.includes('Score');
+
+    if (name === 'team1Id') {
+      // Reset team2 if team1 changes in cross-unit mode
+      if (unidade === 'Contra-Unidades') {
+        setFormData(prev => ({ ...prev, team1Id: value, team2Id: '' }));
+        return;
+      }
+    }
+    
+    setFormData(prev => ({ ...prev, [name]: isScoreField ? parseInt(value) || 0 : value }));
   };
 
   const handleSave = () => {
@@ -63,8 +93,26 @@ const ConfrontoModal: React.FC<ConfrontoModalProps> = ({ isOpen, onClose, onSave
         alert("Uma equipe não pode jogar contra si mesma.");
         return;
     }
+    
+    const team1 = teams.find(t => t.id === formData.team1Id);
+    const team2 = teams.find(t => t.id === formData.team2Id);
 
-    const dataToSave = { ...formData, unidade };
+    if (!team1 || !team2) {
+      alert("Selecione duas equipes válidas.");
+      return;
+    }
+
+    if (unidade === 'Contra-Unidades' && team1.unidade === team2.unidade) {
+      alert("Em confrontos 'Contra-Unidades', as equipes devem ser de unidades diferentes.");
+      return;
+    }
+    
+    if (unidade !== 'Contra-Unidades' && (team1.unidade !== unidade || team2.unidade !== unidade)) {
+      alert(`Ambas as equipes devem ser da unidade ${unidade}.`);
+      return;
+    }
+
+    const dataToSave = { ...formData, unidade: team1.unidade };
     onSave(confronto ? { ...dataToSave, id: confronto.id } : dataToSave);
     onClose();
   };
@@ -79,10 +127,11 @@ const ConfrontoModal: React.FC<ConfrontoModalProps> = ({ isOpen, onClose, onSave
           </div>
           <div className="space-y-4">
              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Unidade</label>
-                <select value={unidade} onChange={e => {setUnidade(e.target.value as Unit); setFormData(f => ({...f, team1Id: '', team2Id: ''}))}} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                  <option>Pelotas</option>
-                  <option>Pedro Osório</option>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipo de Confronto</label>
+                <select value={unidade} onChange={e => {setUnidade(e.target.value as Unit | 'Contra-Unidades'); setFormData(f => ({...f, team1Id: '', team2Id: ''}))}} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  <option value="Pelotas">Unidade: Pelotas</option>
+                  <option value="Pedro Osório">Unidade: Pedro Osório</option>
+                  <option value="Contra-Unidades">Contra-Unidades</option>
                 </select>
               </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
@@ -90,7 +139,7 @@ const ConfrontoModal: React.FC<ConfrontoModalProps> = ({ isOpen, onClose, onSave
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Equipe 1</label>
                     <select name="team1Id" value={formData.team1Id} onChange={handleChange} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                       <option value="">Selecione...</option>
-                      {availableTeams.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
+                      {availableTeams1.map(t => <option key={t.id} value={t.id}>{t.nome}{unidade === 'Contra-Unidades' ? ` (${t.unidade})` : ''}</option>)}
                     </select>
                 </div>
                 <div>
@@ -101,9 +150,9 @@ const ConfrontoModal: React.FC<ConfrontoModalProps> = ({ isOpen, onClose, onSave
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                  <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Equipe 2</label>
-                    <select name="team2Id" value={formData.team2Id} onChange={handleChange} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <select name="team2Id" value={formData.team2Id} onChange={handleChange} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" disabled={unidade === 'Contra-Unidades' && !formData.team1Id}>
                       <option value="">Selecione...</option>
-                      {availableTeams.filter(t => t.id !== formData.team1Id).map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
+                      {availableTeams2.map(t => <option key={t.id} value={t.id}>{t.nome}{unidade === 'Contra-Unidades' ? ` (${t.unidade})` : ''}</option>)}
                     </select>
                 </div>
                 <div>
