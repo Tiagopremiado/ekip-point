@@ -23,7 +23,7 @@ const Footer: React.FC<FooterProps> = ({ onAdminAccess }) => {
   };
 
   return (
-    <footer className="bg-gray-800 text-gray-400 py-6 mt-12">
+    <footer className="bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-6 mt-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {!showInput ? (
           <button
@@ -39,7 +39,7 @@ const Footer: React.FC<FooterProps> = ({ onAdminAccess }) => {
               value={accessCode}
               onChange={(e) => setAccessCode(e.target.value)}
               placeholder="Código de Acesso"
-              className="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               autoFocus
             />
             <button
@@ -51,7 +51,7 @@ const Footer: React.FC<FooterProps> = ({ onAdminAccess }) => {
              <button
               type="button"
               onClick={() => setShowInput(false)}
-              className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 w-full sm:w-auto"
+              className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 w-full sm:w-auto"
             >
               Cancelar
             </button>

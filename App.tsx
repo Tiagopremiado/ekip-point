@@ -97,14 +97,14 @@ const App: React.FC = () => {
   };
 
   if (error) {
-    return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-red-400 text-center p-4">{error}</div>
+    return <div className="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center text-red-600 dark:text-red-400 text-center p-4">{error}</div>
   }
   if(!isLoaded) {
-    return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-white text-xl">Carregando dados...</div>
+    return <div className="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center text-gray-800 dark:text-white text-xl">Carregando dados...</div>
   }
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen flex flex-col">
+    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
         {isAdmin ? (

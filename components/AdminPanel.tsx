@@ -95,24 +95,24 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-        <h2 className="text-3xl font-extrabold text-white">Painel Administrativo</h2>
+        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">Painel Administrativo</h2>
         <button onClick={onLogout} className="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2">
             <LogoutIcon /> Sair
         </button>
       </div>
       
-      <div className="mb-6 p-1.5 bg-gray-800 rounded-lg flex justify-center gap-2">
+      <div className="mb-6 p-1.5 bg-gray-200 dark:bg-gray-800 rounded-lg flex justify-center gap-2">
         {(['Equipes', 'Confrontos'] as AdminView[]).map(view => (
-            <button key={view} onClick={() => setAdminView(view)} className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors duration-300 w-full sm:w-auto ${ adminView === view ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:bg-gray-700' }`}>
+            <button key={view} onClick={() => setAdminView(view)} className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors duration-300 w-full sm:w-auto ${ adminView === view ? 'bg-emerald-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700' }`}>
                 Gerenciar {view}
             </button>
         ))}
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-        <div className="p-1.5 bg-gray-800 rounded-lg flex flex-col sm:flex-row justify-center gap-2 w-full sm:w-auto">
+        <div className="p-1.5 bg-gray-200 dark:bg-gray-800 rounded-lg flex flex-col sm:flex-row justify-center gap-2 w-full sm:w-auto">
             {(['Pelotas', 'Pedro Osório'] as Unit[]).map(unit => (
-            <button key={unit} onClick={() => setActiveUnit(unit)} className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors duration-300 w-full ${ activeUnit === unit ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+            <button key={unit} onClick={() => setActiveUnit(unit)} className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors duration-300 w-full ${ activeUnit === unit ? 'bg-emerald-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'}`}>
                 Unidade {unit}
             </button>
             ))}
@@ -123,60 +123,60 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       </div>
       
       {adminView === 'Equipes' ? (
-        <div className="bg-gray-800 rounded-lg shadow-lg overflow-x-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-x-auto">
             <table className="w-full text-left">
-            <thead className="bg-gray-700"><tr>
-                <th className="p-4 font-semibold text-gray-300">Nome da Equipe</th>
-                <th className="p-4 font-semibold text-gray-300 text-center">Pontos</th>
-                <th className="p-4 font-semibold text-gray-300 text-center">Ações</th>
+            <thead className="bg-gray-100 dark:bg-gray-700"><tr>
+                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Nome da Equipe</th>
+                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300 text-center">Pontos</th>
+                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300 text-center">Ações</th>
             </tr></thead>
             <tbody>
                 {unitTeams.length > 0 ? unitTeams.map(team => (
-                <tr key={team.id} className="border-b border-gray-700 hover:bg-gray-700/50">
-                    <td className="p-4 text-white font-medium">{team.nome}</td>
+                <tr key={team.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td className="p-4 text-gray-900 dark:text-white font-medium">{team.nome}</td>
                     <td className="p-4 text-center">
                         <div className="flex items-center justify-center gap-3">
                             <button onClick={() => adjustPoints(team, -5)} className="p-1.5 rounded-full bg-red-500 hover:bg-red-600 text-white"><MinusIcon className="w-4 h-4" /></button>
-                            <span className="text-lg font-bold text-emerald-400 w-12">{team.pontos}</span>
+                            <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400 w-12">{team.pontos}</span>
                             <button onClick={() => adjustPoints(team, 5)} className="p-1.5 rounded-full bg-green-500 hover:bg-green-600 text-white"><PlusIcon className="w-4 h-4" /></button>
                         </div>
                     </td>
                     <td className="p-4 text-center">
                     <div className="flex justify-center gap-4">
-                        <button onClick={() => openEditTeamModal(team)} className="text-blue-400 hover:text-blue-300 transition-colors"><EditIcon /></button>
-                        <button onClick={() => handleDeleteTeam(team.id)} className="text-red-400 hover:text-red-300 transition-colors"><DeleteIcon /></button>
+                        <button onClick={() => openEditTeamModal(team)} className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"><EditIcon /></button>
+                        <button onClick={() => handleDeleteTeam(team.id)} className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"><DeleteIcon /></button>
                     </div>
                     </td>
                 </tr>
-                )) : ( <tr><td colSpan={3} className="text-center p-8 text-gray-400">Nenhuma equipe para esta unidade.</td></tr> )}
+                )) : ( <tr><td colSpan={3} className="text-center p-8 text-gray-500 dark:text-gray-400">Nenhuma equipe para esta unidade.</td></tr> )}
             </tbody>
             </table>
         </div>
       ) : (
-        <div className="bg-gray-800 rounded-lg shadow-lg overflow-x-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-x-auto">
             <table className="w-full text-left">
-                 <thead className="bg-gray-700"><tr>
-                    <th className="p-4 font-semibold text-gray-300">Confronto</th>
-                    <th className="p-4 font-semibold text-gray-300">Descrição</th>
-                    <th className="p-4 font-semibold text-gray-300 text-center">Ações</th>
+                 <thead className="bg-gray-100 dark:bg-gray-700"><tr>
+                    <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Confronto</th>
+                    <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Descrição</th>
+                    <th className="p-4 font-semibold text-gray-600 dark:text-gray-300 text-center">Ações</th>
                 </tr></thead>
                 <tbody>
                     {unitConfrontos.length > 0 ? unitConfrontos.map(c => (
-                        <tr key={c.id} className="border-b border-gray-700 hover:bg-gray-700/50">
-                            <td className="p-4 text-white font-medium">
+                        <tr key={c.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                            <td className="p-4 text-gray-900 dark:text-white font-medium">
                                 <span className="font-bold">{getTeamName(c.team1Id)}</span>
-                                <span className="text-emerald-400 mx-2">{c.team1Score} x {c.team2Score}</span>
+                                <span className="text-emerald-600 dark:text-emerald-400 mx-2">{c.team1Score} x {c.team2Score}</span>
                                 <span className="font-bold">{getTeamName(c.team2Id)}</span>
                             </td>
-                            <td className="p-4 text-gray-300">{c.description}</td>
+                            <td className="p-4 text-gray-600 dark:text-gray-300">{c.description}</td>
                             <td className="p-4 text-center">
                                 <div className="flex justify-center gap-4">
-                                    <button onClick={() => openEditConfrontoModal(c)} className="text-blue-400 hover:text-blue-300 transition-colors"><EditIcon /></button>
-                                    <button onClick={() => handleDeleteConfronto(c.id)} className="text-red-400 hover:text-red-300 transition-colors"><DeleteIcon /></button>
+                                    <button onClick={() => openEditConfrontoModal(c)} className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"><EditIcon /></button>
+                                    <button onClick={() => handleDeleteConfronto(c.id)} className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"><DeleteIcon /></button>
                                 </div>
                             </td>
                         </tr>
-                    )) : (<tr><td colSpan={3} className="text-center p-8 text-gray-400">Nenhum confronto para esta unidade.</td></tr>)}
+                    )) : (<tr><td colSpan={3} className="text-center p-8 text-gray-500 dark:text-gray-400">Nenhum confronto para esta unidade.</td></tr>)}
                 </tbody>
             </table>
         </div>

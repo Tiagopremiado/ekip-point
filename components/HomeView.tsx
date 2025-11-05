@@ -6,7 +6,7 @@ interface HomeViewProps {
 }
 
 const HomeTeamCard: React.FC<{ team: Team }> = ({ team }) => (
-  <div className="bg-gray-800 rounded-lg shadow-xl overflow-hidden group">
+  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden group">
     <div className="relative h-56">
       <img
         src={team.fotoUrl || 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'}
@@ -20,7 +20,7 @@ const HomeTeamCard: React.FC<{ team: Team }> = ({ team }) => (
       </div>
     </div>
     <div className="p-6">
-      <p className="text-gray-300 italic">"{team.descricao}"</p>
+      <p className="text-gray-600 dark:text-gray-300 italic">"{team.descricao}"</p>
     </div>
   </div>
 );

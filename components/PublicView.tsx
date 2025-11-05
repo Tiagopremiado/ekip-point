@@ -49,9 +49,9 @@ const PublicView: React.FC<PublicViewProps> = ({ teams, confrontos }) => {
   const renderRankingContent = () => {
     switch (activeRankingTab) {
       case 'Pelotas':
-        return teamsByUnit.pelotas.length > 0 ? teamsByUnit.pelotas.map((team, index) => <TeamCard key={team.id} team={team} rank={index + 1} />) : <p className="text-center text-gray-400 col-span-full">Nenhuma equipe para esta unidade.</p>;
+        return teamsByUnit.pelotas.length > 0 ? teamsByUnit.pelotas.map((team, index) => <TeamCard key={team.id} team={team} rank={index + 1} />) : <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">Nenhuma equipe para esta unidade.</p>;
       case 'Pedro Osório':
-        return teamsByUnit.pedroOsorio.length > 0 ? teamsByUnit.pedroOsorio.map((team, index) => <TeamCard key={team.id} team={team} rank={index + 1} />) : <p className="text-center text-gray-400 col-span-full">Nenhuma equipe para esta unidade.</p>;
+        return teamsByUnit.pedroOsorio.length > 0 ? teamsByUnit.pedroOsorio.map((team, index) => <TeamCard key={team.id} team={team} rank={index + 1} />) : <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">Nenhuma equipe para esta unidade.</p>;
       case 'Rank das Unidades':
         return <UnitRankingCard pelotasScore={unitScores.pelotasScore} pedroOsorioScore={unitScores.pedroOsorioScore} />;
     }
@@ -64,7 +64,7 @@ const PublicView: React.FC<PublicViewProps> = ({ teams, confrontos }) => {
         case 'Pedro Osório': confrontosToRender = confrontosByMatchup.pedroOsorio; break;
         case 'Contra-Unidades': confrontosToRender = confrontosByMatchup.contraUnidades; break;
     }
-    return confrontosToRender.length > 0 ? confrontosToRender.map(c => <ConfrontoCard key={c.id} confronto={c} teams={teams} />) : <p className="text-center text-gray-400 col-span-full">Nenhum confronto para esta categoria.</p>;
+    return confrontosToRender.length > 0 ? confrontosToRender.map(c => <ConfrontoCard key={c.id} confronto={c} teams={teams} />) : <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">Nenhum confronto para esta categoria.</p>;
   };
 
   const renderContent = () => {
@@ -91,17 +91,17 @@ const PublicView: React.FC<PublicViewProps> = ({ teams, confrontos }) => {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-extrabold text-white tracking-tight sm:text-5xl">Dinâmica de Equipes</h2>
-        <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-400">Acompanhe a pontuação, os confrontos e o desenvolvimento das equipes.</p>
+        <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight sm:text-5xl">Dinâmica de Equipes</h2>
+        <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400">Acompanhe a pontuação, os confrontos e o desenvolvimento das equipes.</p>
       </div>
 
-       <div className="mb-8 p-1.5 bg-gray-800 rounded-lg flex flex-col sm:flex-row justify-center gap-2 max-w-lg mx-auto">
+       <div className="mb-8 p-1.5 bg-gray-200 dark:bg-gray-800 rounded-lg flex flex-col sm:flex-row justify-center gap-2 max-w-lg mx-auto">
         {(['Início', 'Ranking', 'Confrontos'] as PublicViewTab[]).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`w-full px-4 py-2 text-sm font-semibold rounded-md transition-colors duration-300 ${
-              activeTab === tab ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              activeTab === tab ? 'bg-emerald-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
             }`}
           >
             {tab}
@@ -110,13 +110,13 @@ const PublicView: React.FC<PublicViewProps> = ({ teams, confrontos }) => {
       </div>
 
       {activeTab === 'Ranking' && (
-        <div className="mb-8 p-1.5 bg-gray-800 rounded-lg flex flex-col sm:flex-row justify-center gap-2 max-w-md mx-auto">
+        <div className="mb-8 p-1.5 bg-gray-200 dark:bg-gray-800 rounded-lg flex flex-col sm:flex-row justify-center gap-2 max-w-md mx-auto">
             {(['Pelotas', 'Pedro Osório', 'Rank das Unidades'] as RankingSubTab[]).map(subTab => (
             <button
                 key={subTab}
                 onClick={() => setActiveRankingTab(subTab)}
                 className={`w-full px-4 py-2 text-sm font-semibold rounded-md transition-colors duration-300 ${
-                activeRankingTab === subTab ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+                activeRankingTab === subTab ? 'bg-emerald-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
             >
                 {subTab}
@@ -126,13 +126,13 @@ const PublicView: React.FC<PublicViewProps> = ({ teams, confrontos }) => {
       )}
 
       {activeTab === 'Confrontos' && (
-        <div className="mb-8 p-1.5 bg-gray-800 rounded-lg flex flex-col sm:flex-row justify-center gap-2 max-w-md mx-auto">
+        <div className="mb-8 p-1.5 bg-gray-200 dark:bg-gray-800 rounded-lg flex flex-col sm:flex-row justify-center gap-2 max-w-md mx-auto">
             {(['Pelotas', 'Pedro Osório', 'Contra-Unidades'] as ConfrontosSubTab[]).map(subTab => (
             <button
                 key={subTab}
                 onClick={() => setActiveConfrontosTab(subTab)}
                 className={`w-full px-4 py-2 text-sm font-semibold rounded-md transition-colors duration-300 ${
-                activeConfrontosTab === subTab ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+                activeConfrontosTab === subTab ? 'bg-emerald-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
             >
                 {subTab}

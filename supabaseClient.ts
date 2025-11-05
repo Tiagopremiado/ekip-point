@@ -1,5 +1,13 @@
-// Fix: Add a triple-slash directive to provide type definitions for Vite's `import.meta.env`.
-/// <reference types="vite/client" />
+// Fix: Manually define types for Vite's `import.meta.env` to resolve typing errors,
+// as the triple-slash directive was not working in this environment.
+declare global {
+  interface ImportMeta {
+    readonly env: {
+      readonly VITE_SUPABASE_URL: string;
+      readonly VITE_SUPABASE_ANON_KEY: string;
+    }
+  }
+}
 
 import { createClient } from '@supabase/supabase-js';
 import { Team, Confronto, Unit } from './types';
@@ -31,7 +39,6 @@ interface Database {
           fotoUrl?: string;
         };
         Update: {
-          id?: string;
           nome?: string;
           unidade?: Unit;
           pontos?: number;
@@ -54,7 +61,6 @@ interface Database {
           unidade: Unit;
         };
         Update: {
-          id?: string;
           team1Id?: string;
           team2Id?: string;
           team1Score?: number;
