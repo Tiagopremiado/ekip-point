@@ -7,8 +7,8 @@ export interface Team {
   unidade: Unit;
   pontos: number;
   descricao: string;
-  foPositivos: string[];
-  foNegativos: string[];
+  fatosPositivos: string[];
+  fatosNegativos: string[];
   fotoUrl?: string;
 }
 
@@ -21,4 +21,11 @@ export interface Confronto {
   date: string; // YYYY-MM-DD
   description: string;
   unidade: Unit;
+}
+
+export interface TeamComment {
+  id: string;
+  team_id: string;
+  comment: string;
+  created_at: string;
 }
