@@ -10,7 +10,7 @@ declare global {
 }
 
 import { createClient } from '@supabase/supabase-js';
-import { Team, Confronto, Unit } from './types';
+import { Team, Confronto, Unit, TeamComment } from './types';
 
 // Lê as credenciais das Variáveis de Ambiente.
 // Na Vercel, ele usará as variáveis que você configurou no painel.
@@ -34,8 +34,8 @@ interface Database {
           unidade: Unit;
           pontos: number;
           descricao: string;
-          foPositivos: string[];
-          foNegativos: string[];
+          fatosPositivos: string[];
+          fatosNegativos: string[];
           fotoUrl?: string;
         };
         Update: {
@@ -43,8 +43,8 @@ interface Database {
           unidade?: Unit;
           pontos?: number;
           descricao?: string;
-          foPositivos?: string[];
-          foNegativos?: string[];
+          fatosPositivos?: string[];
+          fatosNegativos?: string[];
           fotoUrl?: string;
         };
       };
@@ -68,6 +68,16 @@ interface Database {
           date?: string;
           description?: string;
           unidade?: Unit;
+        };
+      };
+      team_comments: {
+        Row: TeamComment;
+        Insert: {
+          team_id: string;
+          comment: string;
+        };
+        Update: {
+          comment?: string;
         };
       };
     };
