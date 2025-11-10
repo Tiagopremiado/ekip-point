@@ -1,27 +1,32 @@
 import React, { useState, useMemo } from 'react';
-import { Team, Unit, Confronto } from '../types';
-import { EditIcon, DeleteIcon, PlusIcon, MinusIcon, LogoutIcon } from './Icons';
+import { Team, Unit, Confronto, TeamComment } from '../types';
+import { EditIcon, DeleteIcon, PlusIcon, MinusIcon, LogoutIcon, CommentIcon } from './Icons';
 import Modal from './Modal';
 import ConfrontoModal from './ConfrontoModal';
+import CommentsModal from './CommentsModal';
 
 interface AdminPanelProps {
   teams: Team[];
   confrontos: Confronto[];
+  comments: TeamComment[];
   addTeam: (team: Omit<Team, 'id'>) => Promise<void>;
   updateTeam: (team: Team) => Promise<void>;
   deleteTeam: (id: string) => Promise<void>;
   addConfronto: (confronto: Omit<Confronto, 'id'>) => Promise<void>;
   updateConfronto: (confronto: Confronto) => Promise<void>;
   deleteConfronto: (id: string) => Promise<void>;
+  addComment: (teamId: string, comment: string) => Promise<void>;
+  deleteComment: (commentId: string) => Promise<void>;
   onLogout: () => void;
 }
 
 type AdminView = 'Equipes' | 'Confrontos';
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ 
-    teams, confrontos, 
+    teams, confrontos, comments,
     addTeam, updateTeam, deleteTeam, 
     addConfronto, updateConfronto, deleteConfronto,
+    addComment, deleteComment,
     onLogout 
 }) => {
   const [activeUnit, setActiveUnit] = useState<Unit>('Pelotas');
@@ -32,6 +37,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const [isConfrontoModalOpen, setIsConfrontoModalOpen] = useState(false);
   const [editingConfronto, setEditingConfronto] = useState<Confronto | null>(null);
+  
+  const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
+  const [selectedTeamForComments, setSelectedTeamForComments] = useState<Team | null>(null);
+
 
   const unitTeams = useMemo(() => teams.filter(team => team.unidade === activeUnit).sort((a,b) => b.pontos - a.pontos), [teams, activeUnit]);
   const unitConfrontos = useMemo(() => confrontos.filter(c => {
@@ -51,7 +60,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
   const handleDeleteTeam = async (id: string) => { 
-      if (window.confirm("Excluir esta equipe? Todos os confrontos associados também serão removidos.")) {
+      if (window.confirm("Excluir esta equipe? Todos os confrontos e comentários associados também serão removidos.")) {
           try {
               await deleteTeam(id);
           } catch(error) {
@@ -88,6 +97,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
           }
       } 
   };
+  
+  // Comments Modal Handlers
+  const openCommentsModal = (team: Team) => {
+      setSelectedTeamForComments(team);
+      setIsCommentsModalOpen(true);
+  }
 
   const getTeamName = (id: string) => teams.find(t => t.id === id)?.nome || 'Equipe Desconhecida';
 
@@ -143,6 +158,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                     </td>
                     <td className="p-4 text-center">
                     <div className="flex justify-center gap-4">
+                        <button onClick={() => openCommentsModal(team)} className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"><CommentIcon /></button>
                         <button onClick={() => openEditTeamModal(team)} className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"><EditIcon /></button>
                         <button onClick={() => handleDeleteTeam(team.id)} className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"><DeleteIcon /></button>
                     </div>
@@ -184,6 +200,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
       <Modal isOpen={isTeamModalOpen} onClose={() => setIsTeamModalOpen(false)} onSave={handleSaveTeam} team={editingTeam}/>
       <ConfrontoModal isOpen={isConfrontoModalOpen} onClose={() => setIsConfrontoModalOpen(false)} onSave={handleSaveConfronto} confronto={editingConfronto} teams={teams}/>
+      <CommentsModal 
+        isOpen={isCommentsModalOpen} 
+        onClose={() => setIsCommentsModalOpen(false)} 
+        team={selectedTeamForComments}
+        comments={comments.filter(c => c.team_id === selectedTeamForComments?.id)}
+        addComment={addComment}
+        deleteComment={deleteComment}
+      />
     </div>
   );
 };
