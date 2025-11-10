@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Team, Confronto } from './types';
+import { Team, Confronto, TeamComment } from './types';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import AdminPanel from './components/AdminPanel';
@@ -9,6 +9,7 @@ import { supabase } from './supabaseClient';
 const App: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [confrontos, setConfrontos] = useState<Confronto[]>([]);
+  const [comments, setComments] = useState<TeamComment[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +31,14 @@ const App: React.FC = () => {
       
       if (confrontosError) throw confrontosError;
       setConfrontos(confrontosData || []);
+
+      const { data: commentsData, error: commentsError } = await supabase
+        .from('team_comments')
+        .select('*')
+        .order('created_at', { ascending: true });
+        
+      if (commentsError) throw commentsError;
+      setComments(commentsData || []);
       
       const storedAdmin = sessionStorage.getItem('isAdmin');
       if (storedAdmin === 'true') {
@@ -71,7 +80,7 @@ const App: React.FC = () => {
     if (data) setTeams(prev => prev.map(t => t.id === updatedTeam.id ? data[0] : t));
   };
   const deleteTeam = async (id: string) => {
-    // ON DELETE CASCADE no DB cuidará dos confrontos
+    // ON DELETE CASCADE no DB cuidará dos confrontos e comentários
     const { error } = await supabase.from('teams').delete().eq('id', id);
     if (error) throw error;
     setTeams(prev => prev.filter(t => t.id !== id));
@@ -95,6 +104,19 @@ const App: React.FC = () => {
     if (error) throw error;
     setConfrontos(prev => prev.filter(c => c.id !== id));
   };
+  
+  // Comment CRUD
+  const addComment = async (teamId: string, comment: string) => {
+      const { data, error } = await supabase.from('team_comments').insert({ team_id: teamId, comment: comment }).select();
+      if (error) throw error;
+      if (data) setComments(prev => [...prev, data[0]]);
+  }
+  const deleteComment = async (commentId: string) => {
+      const { error } = await supabase.from('team_comments').delete().eq('id', commentId);
+      if (error) throw error;
+      setComments(prev => prev.filter(c => c.id !== commentId));
+  }
+
 
   if (error) {
     return <div className="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center text-red-600 dark:text-red-400 text-center p-4">{error}</div>
@@ -111,16 +133,19 @@ const App: React.FC = () => {
           <AdminPanel 
             teams={teams}
             confrontos={confrontos}
+            comments={comments}
             addTeam={addTeam}
             updateTeam={updateTeam}
             deleteTeam={deleteTeam}
             addConfronto={addConfronto}
             updateConfronto={updateConfronto}
             deleteConfronto={deleteConfronto}
+            addComment={addComment}
+            deleteComment={deleteComment}
             onLogout={handleLogout}
           />
         ) : (
-          <PublicView teams={teams} confrontos={confrontos} />
+          <PublicView teams={teams} confrontos={confrontos} comments={comments} />
         )}
       </main>
       <Footer onAdminAccess={handleAdminAccess} />
