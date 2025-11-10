@@ -14,8 +14,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, team }) => {
     nome: '',
     unidade: 'Pelotas' as Unit,
     descricao: '',
-    foPositivos: '',
-    foNegativos: '',
+    fatosPositivos: '',
+    fatosNegativos: '',
     fotoUrl: ''
   });
   
@@ -25,8 +25,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, team }) => {
         nome: team.nome,
         unidade: team.unidade,
         descricao: team.descricao,
-        foPositivos: team.foPositivos.join('\n'),
-        foNegativos: team.foNegativos.join('\n'),
+        fatosPositivos: team.fatosPositivos.join('\n'),
+        fatosNegativos: team.fatosNegativos.join('\n'),
         fotoUrl: team.fotoUrl || ''
       });
     } else {
@@ -34,8 +34,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, team }) => {
         nome: '',
         unidade: 'Pelotas' as Unit,
         descricao: '',
-        foPositivos: '',
-        foNegativos: '',
+        fatosPositivos: '',
+        fatosNegativos: '',
         fotoUrl: ''
       });
     }
@@ -57,8 +57,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, team }) => {
     const dataToSave = {
       ...formData,
       pontos: team?.pontos ?? 0,
-      foPositivos: formData.foPositivos.split('\n').filter(Boolean),
-      foNegativos: formData.foNegativos.split('\n').filter(Boolean)
+      fatosPositivos: formData.fatosPositivos.split('\n').filter(Boolean),
+      fatosNegativos: formData.fatosNegativos.split('\n').filter(Boolean)
     };
     
     onSave(team ? { ...dataToSave, id: team.id } : dataToSave);
@@ -94,12 +94,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, team }) => {
               <textarea name="descricao" value={formData.descricao} onChange={handleChange} rows={2} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
              <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">F.O+ (um por linha)</label>
-              <textarea name="foPositivos" value={formData.foPositivos} onChange={handleChange} rows={3} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fatos Observados Positivos (um por linha)</label>
+              <textarea name="fatosPositivos" value={formData.fatosPositivos} onChange={handleChange} rows={3} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
              <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">F.O- (um por linha)</label>
-              <textarea name="foNegativos" value={formData.foNegativos} onChange={handleChange} rows={3} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fatos Observados Negativos (um por linha)</label>
+              <textarea name="fatosNegativos" value={formData.fatosNegativos} onChange={handleChange} rows={3} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
           </div>
         </div>
