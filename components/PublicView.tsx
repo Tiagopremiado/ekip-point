@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Team, Confronto } from '../types';
+import { Team, Confronto, TeamComment } from '../types';
 import TeamCard from './TeamCard';
 import ConfrontoCard from './ConfrontoCard';
 import HomeView from './HomeView';
@@ -8,13 +8,14 @@ import UnitRankingCard from './UnitRankingCard';
 interface PublicViewProps {
   teams: Team[];
   confrontos: Confronto[];
+  comments: TeamComment[];
 }
 
 type PublicViewTab = 'Início' | 'Ranking' | 'Confrontos';
 type RankingSubTab = 'Pelotas' | 'Pedro Osório' | 'Rank das Unidades';
 type ConfrontosSubTab = 'Pelotas' | 'Pedro Osório' | 'Contra-Unidades';
 
-const PublicView: React.FC<PublicViewProps> = ({ teams, confrontos }) => {
+const PublicView: React.FC<PublicViewProps> = ({ teams, confrontos, comments }) => {
   const [activeTab, setActiveTab] = useState<PublicViewTab>('Início');
   const [activeRankingTab, setActiveRankingTab] = useState<RankingSubTab>('Pelotas');
   const [activeConfrontosTab, setActiveConfrontosTab] = useState<ConfrontosSubTab>('Pelotas');
@@ -49,9 +50,9 @@ const PublicView: React.FC<PublicViewProps> = ({ teams, confrontos }) => {
   const renderRankingContent = () => {
     switch (activeRankingTab) {
       case 'Pelotas':
-        return teamsByUnit.pelotas.length > 0 ? teamsByUnit.pelotas.map((team, index) => <TeamCard key={team.id} team={team} rank={index + 1} />) : <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">Nenhuma equipe para esta unidade.</p>;
+        return teamsByUnit.pelotas.length > 0 ? teamsByUnit.pelotas.map((team, index) => <TeamCard key={team.id} team={team} rank={index + 1} comments={comments.filter(c => c.team_id === team.id)} />) : <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">Nenhuma equipe para esta unidade.</p>;
       case 'Pedro Osório':
-        return teamsByUnit.pedroOsorio.length > 0 ? teamsByUnit.pedroOsorio.map((team, index) => <TeamCard key={team.id} team={team} rank={index + 1} />) : <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">Nenhuma equipe para esta unidade.</p>;
+        return teamsByUnit.pedroOsorio.length > 0 ? teamsByUnit.pedroOsorio.map((team, index) => <TeamCard key={team.id} team={team} rank={index + 1} comments={comments.filter(c => c.team_id === team.id)} />) : <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">Nenhuma equipe para esta unidade.</p>;
       case 'Rank das Unidades':
         return <UnitRankingCard pelotasScore={unitScores.pelotasScore} pedroOsorioScore={unitScores.pedroOsorioScore} />;
     }
